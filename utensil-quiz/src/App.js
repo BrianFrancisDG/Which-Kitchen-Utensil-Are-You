@@ -5,6 +5,7 @@ import './App.css';
 // Component Imports
 import Quiz from './components/Quiz';
 import quizQuestions from './api/quizQuestions';
+import utensilDescriptions from './api/utensilDescriptions';
 import Result from './components/Result';
 
 class App extends Component {
@@ -18,7 +19,9 @@ class App extends Component {
       answerOptions: [],
       answer: '',
       answersCount: {},
-      result: ''
+      result: '',
+      description: '',
+      tldr: ''
     };
 
     this.handleAnswerSelected = this.handleAnswerSelected.bind(this);
@@ -96,11 +99,20 @@ class App extends Component {
     return answersCountKeys.filter(key => answersCount[key] === maxAnswerCount);
   }
 
+  getResultDescription(result){
+    const resultDescription = utensilDescriptions.filter(utensil => utensil.type === result);
+    const description = resultDescription.map(result => result.description)[0];
+    const tldr = resultDescription.map(result => result.tldr)[0];
+
+    return [description, tldr];
+  }
+
   setResults(result) {
     if (result.length === 1) {
-      this.setState({ result: result[0] });
+      const resultDescription = this.getResultDescription(result[0]);
+      this.setState({ result: result[0], description: resultDescription[0], tldr:resultDescription[1]});
     } else {
-      this.setState({ result: 'Undetermined' });
+      this.setState({ result: 'Undetermined', tldr: `You're the best of all worlds.` });
     }
   }
 
@@ -118,14 +130,13 @@ class App extends Component {
   }
 
   renderResult() {
-    return <Result quizResult={this.state.result} />;
+    return <Result quizResult={this.state.result} description={this.state.description} tldr={this.state.tldr} />;
   }
 
   render() {
     return (
       <div className="App">
         <div className="App-header">
-          {/* <img src={logo} className="App-logo" alt="logo" /> */}
           <h2>Which Kitchen Utensil Are You?</h2>
         </div>
         {this.state.result ? this.renderResult() : this.renderQuiz()}
