@@ -100,9 +100,9 @@ class App extends Component {
   }
 
   getResultDescription(result){
-    const resultDescription = utensilDescriptions.filter(utensil => utensil.type === result);
-    const description = resultDescription.map(result => result.description)[0];
-    const tldr = resultDescription.map(result => result.tldr)[0];
+    const resultDescription = utensilDescriptions.find(utensil => utensil.type === result);
+    const description = resultDescription["description"];
+    const tldr = resultDescription["tldr"];
 
     return [description, tldr];
   }
